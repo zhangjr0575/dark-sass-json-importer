@@ -35,7 +35,16 @@
     "scss-json-importer",
     "dark-sass-json-importer"
   ],
+  "author": "zhangjr0575",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhangjr0575/dark-sass-json-importer.git"
+  },
+  "homepage": "https://github.com/zhangjr0575/dark-sass-json-importer#readme",
+  "bugs": {
+    "url": "https://github.com/zhangjr0575/dark-sass-json-importer/issues"
+  },
   "engines": {
     "node": ">=14.0.0"
   },
