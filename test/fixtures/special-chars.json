@@ -1,0 +1,7 @@
+{
+  "with-dash": "value1",
+  "with_underscore": "value2",
+  "withCamelCase": "value3",
+  "with.dot": "value4",
+  "with spaces": "value5"
+}

@@ -1,0 +1,48 @@
+{
+  "name": "dark-sass-json-importer",
+  "version": "1.0.0",
+  "description": "Dart Sass importer for JSON files - import JSON as SCSS variables",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./types.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "types.d.ts",
+    "README.md",
+    "README.en.md"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "npm run build && jest",
+    "test:coverage": "npm run build && jest --coverage",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "sass",
+    "scss",
+    "json",
+    "importer",
+    "dart-sass",
+    "variables"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "peerDependencies": {
+    "sass": ">=1.45.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "jest": "^29.7.0",
+    "sass": "^1.77.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "theme": {
+    "colors": {
+      "primary": "#ff0000",
+      "secondary": "#00ff00"
+    },
+    "fonts": ["Arial", "Helvetica", "sans-serif"],
+    "enabled": true
+  },
+  "config": {
+    "version": "1.0.0",
+    "debug": false,
+    "values": [1, 2, 3]
+  },
+  "metadata": null
+}

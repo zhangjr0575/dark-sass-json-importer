@@ -1,0 +1,15 @@
+{
+  "colors": {
+    "primary": "#ff0000",
+    "secondary": "#00ff00",
+    "tertiary": {
+      "light": "#ffffff",
+      "dark": "#000000"
+    }
+  },
+  "spacing": {
+    "small": 8,
+    "medium": 16,
+    "large": 24
+  }
+}

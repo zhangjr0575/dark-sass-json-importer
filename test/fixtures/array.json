@@ -1,0 +1,9 @@
+{
+  "breakpoints": [320, 768, 1024, 1200],
+  "colors": ["#ff0000", "#00ff00", "#0000ff"],
+  "empty": [],
+  "nested": [
+    { "name": "item1" },
+    { "name": "item2" }
+  ]
+}
