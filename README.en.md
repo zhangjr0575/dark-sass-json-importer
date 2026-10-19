@@ -56,6 +56,7 @@ const result = sass.compile('input.scss', {
 
 **input.scss:**
 ```scss
+@use "sass:map";
 @use "./variables.json" as *;
 
 .container {
@@ -66,7 +67,7 @@ const result = sass.compile('input.scss', {
     width: 100%;
   }
   
-  padding: map-get($spacing, small);
+  padding: map.get($spacing, small);
 }
 ```
 
@@ -190,10 +191,11 @@ importers: [jsonImporter({ asMap: true })]
 ```
 
 ```scss
+@use "sass:map";
 @use "./variables.json" as *;
 .box {
-  color: map-get($variables, color);  // #fff
-  size: map-get($variables, size);    // 16
+  color: map.get($variables, color);  // #fff
+  size: map.get($variables, size);    // 16
 }
 ```
 
@@ -232,10 +234,11 @@ importers: [jsonImporter({
 ```
 
 ```scss
+@use "sass:map";
 @use "./theme.json" as *;
 
 .button {
-  background: map-get($colors, primary);
+  background: map.get($colors, primary);
   font-family: nth($fonts, 1);
 }
 ```
@@ -276,12 +279,13 @@ importers: [jsonImporter({
 ```
 
 ```scss
+@use "sass:map";
 @use "./config.json" as *;
 
 @if not $debug {
   .app {
-    color: map-get(map-get($theme, colors), primary);
-    font-family: nth(map-get($theme, fonts), 1);
+    color: map.get(map.get($theme, colors), primary);
+    font-family: nth(map.get($theme, fonts), 1);
   }
 }
 ```
@@ -326,7 +330,7 @@ const importer = jsonImporter({ asMap: false });
 4. **Strings pass through as-is**: JSON strings are converted to SCSS values without automatic quoting.
 5. **null values preserved**: JSON null values are converted to SCSS `null`, not filtered out.
 6. **Dart Sass only**: The deprecated `node-sass` is not supported.
-7. **`@use ... as theme` namespace**: In default mode, top-level JSON keys must be accessed via `theme.$key` under a namespace, not `map-get(theme, key)` (`theme` is a namespace, not a map).
+7. **`@use ... as theme` namespace**: In default mode, top-level JSON keys must be accessed via `theme.$key` under a namespace, not `map.get(theme, key)` (`theme` is a namespace, not a map).
 
 ## Compatibility
 

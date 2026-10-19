@@ -55,6 +55,7 @@ const result = sass.compile('input.scss', {
 ### 3. 在 SCSS 中使用
 
 ```scss
+@use "sass:map";
 @use "./variables.json" as *;
 
 .container {
@@ -65,7 +66,7 @@ const result = sass.compile('input.scss', {
     width: 100%;
   }
 
-  padding: map-get($spacing, small);
+  padding: map.get($spacing, small);
 }
 ```
 
@@ -188,9 +189,10 @@ importers: [jsonImporter({ asMap: true })]
 ```
 
 ```scss
+@use "sass:map";
 @use "./variables.json" as *;
 .box {
-  color: map-get($variables, primaryColor);
+  color: map.get($variables, primaryColor);
 }
 ```
 
@@ -225,10 +227,11 @@ importers: [jsonImporter({
 ```
 
 ```scss
+@use "sass:map";
 @use "./theme.json" as *;
 
 .button {
-  background: map-get($colors, primary);
+  background: map.get($colors, primary);
   font-family: nth($fonts, 1);
 }
 ```
@@ -246,12 +249,13 @@ importers: [jsonImporter({
 ```
 
 ```scss
+@use "sass:map";
 @use "./config.json" as *;
 
 @if not $debug {
   .app {
-    color: map-get(map-get($theme, colors), primary);
-    font-family: nth(map-get($theme, fonts), 1);
+    color: map.get(map.get($theme, colors), primary);
+    font-family: nth(map.get($theme, fonts), 1);
   }
 }
 ```
@@ -282,7 +286,7 @@ importers: [jsonImporter({
 4. **字符串原样输出**：JSON 字符串会原样转为 SCSS 值，不会自动添加引号
 5. **null 值保留**：JSON 中的 null 会转为 SCSS 的 `null`，不会过滤
 6. **仅支持 Dart Sass**：不支持已废弃的 `node-sass`
-7. **`@use ... as theme` 命名空间**：默认模式下，JSON 顶层键在命名空间下需通过 `theme.$key` 访问，不能用 `map-get(theme, key)`（`theme` 是命名空间而非 map）
+7. **`@use ... as theme` 命名空间**：默认模式下，JSON 顶层键在命名空间下需通过 `theme.$key` 访问，不能用 `map.get(theme, key)`（`theme` 是命名空间而非 map）
 
 ## 兼容性
 
