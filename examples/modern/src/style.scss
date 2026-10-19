@@ -1,0 +1,18 @@
+// 通过 @use 导入 JSON，命名空间为 theme
+// theme.$primaryColor 等成员由 dark-sass-json-importer 注入
+@use "@/theme.json" as theme;
+
+.primary {
+  color: theme.$primaryColor;
+  font-size: theme.$fontSize * 1px;
+}
+
+.muted {
+  color: theme.$mutedColor;
+}
+
+.box {
+  background-color: theme.$boxBgColor;
+  padding: 20px;
+  border: 1px solid theme.$mutedColor;
+}
