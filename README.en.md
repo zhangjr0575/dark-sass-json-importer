@@ -1,6 +1,6 @@
 **English | [中文](README.md)**
 
-# dark-sass-json-importer
+# @zhangjr0575/dark-sass-json-importer
 
 A custom Dart Sass Importer that allows you to import JSON files directly into SCSS and use them as variables.
 
@@ -9,7 +9,7 @@ Supports both **modern API** (`sass.compile` + `importers`) and **legacy JS API*
 ## Installation
 
 ```bash
-npm install @zhangjr0575/dark-sass-json-importer sass
+npm install @zhangjr0575/dark-sass-json-importer sass@1.45
 ```
 
 ## Features
@@ -22,7 +22,7 @@ npm install @zhangjr0575/dark-sass-json-importer sass
 - Supports both `@import` and `@use` syntax.
 - **Dual-mode**: modern (`sass.compile`) and legacy (`sass.render`) API support.
 - Path aliases support (e.g., `@/` → project root).
-- Provides both ESM and CommonJS modules.
+- Supports both ESM and CommonJS modules.
 
 ## Quick Start
 
@@ -114,7 +114,7 @@ export default defineConfig({
 });
 ```
 
-### Legacy API (Vite <5.4, HBuilderX built-in vite 5.2.x)
+### Legacy API (Dart Sass 1.0+ / Vite < 5.4)
 
 The `importer` field in `sass.render()` expects a **function-style** importer, not the modern API object. Set `legacy: true` and this package will automatically return a function-style importer compatible with the legacy API:
 
@@ -133,12 +133,9 @@ sass.render({
 **Vite configuration** (`vite.config.js`, Vite <5.4 / HBuilderX):
 
 ```javascript
+import path from 'path';
 import { defineConfig } from 'vite';
 import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   css: {
@@ -164,6 +161,7 @@ export default defineConfig({
 | Number    | Number    | `42` → `$var: 42;` |
 | Boolean   | Boolean   | `true` → `$var: true;` |
 | null      | null      | `null` → `$var: null;` |
+| undefined | undefined | `undefined` → `$var: undefined;` |
 
 ## Configuration Options
 
@@ -172,15 +170,14 @@ export default defineConfig({
 **Default mode**: Each top-level key in the JSON generates an independent SCSS variable.
 
 ```javascript
-// variables.json: { "color": "#fff", "size": 16 }
 importers: [jsonImporter()]
 ```
 
 ```scss
 @use "./variables.json" as *;
 .box {
-  color: $color;        // #fff
-  size: $size;          // 16
+  color: $primaryColor;
+  font-size: $fontSize;
 }
 ```
 
@@ -194,8 +191,7 @@ importers: [jsonImporter({ asMap: true })]
 @use "sass:map";
 @use "./variables.json" as *;
 .box {
-  color: map.get($variables, color);  // #fff
-  size: map.get($variables, size);    // 16
+  color: map.get($variables, primaryColor);
 }
 ```
 
@@ -296,7 +292,7 @@ importers: [jsonImporter({
 
 Creates a JSON Importer instance.
 
-- `options.legacy === true` → returns a legacy function-style importer
+- `options.legacy` is `true` → returns a legacy function-style importer
 - Otherwise → returns a modern importer object
 
 ### createImporter(options?)
@@ -307,20 +303,6 @@ Explicitly creates a modern API importer object (`{ canonicalize, load }`).
 
 Explicitly creates a legacy function-style importer with signature:
 `(url: string, prev: string, done: (result) => void) => void`
-
-### CommonJS
-
-```javascript
-const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
-const importer = jsonImporter({ asMap: false });
-```
-
-### ES Modules
-
-```javascript
-import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
-const importer = jsonImporter({ asMap: false });
-```
 
 ## Important Notes
 
@@ -339,7 +321,6 @@ const importer = jsonImporter({ asMap: false });
 - Vite >= 6.0 (Modern API enabled by default)
 - Vite 5.4 - 5.x (requires explicit `api: 'modern-compiler'` setting)
 - Vite < 5.4 (use `legacy: true` option)
-- HBuilderX built-in vite 5.2.x (use `legacy: true` option)
 
 ### Sass Version Requirements
 
@@ -358,7 +339,6 @@ const importer = jsonImporter({ asMap: false });
 | Vite | >= 6.0 | Enabled by default, no configuration needed |
 | Vite | 5.4 - 5.x | Set `api: 'modern-compiler'` |
 | Vite | < 5.4 | Use `legacy: true` option |
-| HBuilderX | built-in vite 5.2.x | Use `legacy: true` option |
 
 > **Note**: Dart Sass's Legacy API (`render()`, `renderSync()`) is deprecated and will be removed in Dart Sass 2.0.0. New projects are recommended to use the Modern API.
 

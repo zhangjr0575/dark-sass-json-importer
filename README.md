@@ -1,6 +1,6 @@
 **[English](README.en.md) | 中文**
 
-# dark-sass-json-importer
+# @zhangjr0575/dark-sass-json-importer
 
 Dart Sass 自定义 Importer，让你直接在 SCSS 中导入 JSON 文件并作为变量使用。
 
@@ -9,7 +9,7 @@ Dart Sass 自定义 Importer，让你直接在 SCSS 中导入 JSON 文件并作�
 ## 安装
 
 ```bash
-npm install @zhangjr0575/dark-sass-json-importer sass
+npm install @zhangjr0575/dark-sass-json-importer sass@1.45
 ```
 
 ## 特性
@@ -22,7 +22,7 @@ npm install @zhangjr0575/dark-sass-json-importer sass
 - 支持 `@import` 和 `@use` 语法
 - **双模式**：modern（`sass.compile`）与 legacy（`sass.render`）API
 - 路径别名支持（如 `@/` → 项目根目录）
-- 同时提供 ESM 和 CommonJS 模块
+- 支持 ESM 和 CommonJS 双模块
 
 ## 快速开始
 
@@ -113,7 +113,7 @@ export default defineConfig({
 });
 ```
 
-### Legacy API（Vite <5.4、HBuilderX 内置 vite 5.2.x）
+### Legacy API（Dart Sass 1.0+ / Vite < 5.4）
 
 `sass.render()` 的 `importer` 字段期望的是**函数式** importer，而非 modern API 的对象式。开启 `legacy: true` 选项，本包会自动返回适配 legacy 的函数式 importer：
 
@@ -132,12 +132,9 @@ sass.render({
 **Vite 配置**（`vite.config.js`，Vite <5.4 / HBuilderX）：
 
 ```javascript
+import path from 'path';
 import { defineConfig } from 'vite';
 import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   css: {
@@ -163,6 +160,7 @@ export default defineConfig({
 | 数字 | Number | `42` → `$var: 42;` |
 | 布尔值 | Boolean | `true` → `$var: true;` |
 | null | null | `null` → `$var: null;` |
+| undefined | undefined | `undefined` → `$var: undefined;` |
 
 ## 配置选项
 
@@ -295,7 +293,6 @@ importers: [jsonImporter({
 - Vite >= 6.0（默认使用 Modern API）
 - Vite 5.4 - 5.x（需显式设置 `api: 'modern-compiler'`）
 - Vite < 5.4（使用 `legacy: true` 选项）
-- HBuilderX 内置 vite 5.2.x（使用 `legacy: true`）
 
 ### Sass 版本要求
 
@@ -314,7 +311,6 @@ importers: [jsonImporter({
 | Vite | >= 6.0 | 默认启用，无需配置 |
 | Vite | 5.4 - 5.x | 需设置 `api: 'modern-compiler'` |
 | Vite | < 5.4 | 使用 `legacy: true` 选项 |
-| HBuilderX | 内置 vite 5.2.x | 使用 `legacy: true` 选项 |
 
 > **注意**：Dart Sass 的 Legacy API（`render()`、`renderSync()`）已弃用，将在 Dart Sass 2.0.0 中移除。建议新项目使用 Modern API。
 
