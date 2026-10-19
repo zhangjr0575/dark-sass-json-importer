@@ -20,10 +20,8 @@
   ],
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "npm run build && jest",
-    "test:coverage": "npm run build && jest --coverage",
-    "prepublish": "npm run build && npm test",
-    "publish": "npm run prepublish && npm publish"
+    "publish": "npm run test:coverage && npm publish",
+    "test:coverage": "npm run build && jest --coverage"
   },
   "keywords": [
     "sass",
@@ -44,6 +42,10 @@
   "homepage": "https://github.com/zhangjr0575/dark-sass-json-importer#readme",
   "bugs": {
     "url": "https://github.com/zhangjr0575/dark-sass-json-importer/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "engines": {
     "node": ">=14.0.0"
