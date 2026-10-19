@@ -1,3 +1,5 @@
+**[English](README.en.md) | 中文**
+
 # dark-sass-json-importer
 
 Dart Sass 自定义 Importer，让你直接在 SCSS 中导入 JSON 文件并作为变量使用。
@@ -24,7 +26,18 @@ npm install dark-sass-json-importer sass
 
 ## 快速开始
 
-### 1. 创建 JSON 文件
+### 1. 配置 Sass 编译器
+
+```javascript
+const sass = require('sass');
+const jsonImporter = require('dark-sass-json-importer');
+
+const result = sass.compile('input.scss', {
+  importers: [jsonImporter()]
+});
+```
+
+### 2. 创建 JSON 文件
 
 **variables.json:**
 ```json
@@ -59,12 +72,14 @@ npm install dark-sass-json-importer sass
 **编译结果:**
 ```css
 .container {
-  color: "#ff0000";
+  color: #ff0000;
   font-size: 16;
   width: 100%;
   padding: 8;
 }
 ```
+
+> **提示**：JSON 中的字符串会原样转为 SCSS 值，不会自动添加引号。
 
 ## 配置 Sass 编译器
 
@@ -143,9 +158,10 @@ export default defineConfig({
 |----------|----------|------|
 | 对象 | Map | `{ "a": 1 }` → `$var: (a: 1);` |
 | 数组 | List | `[1, 2, 3]` → `$var: (1, 2, 3);` |
-| 字符串 | String | `"hello"` → `$var: "hello";` |
+| 字符串 | String | `"hello"` → `$var: hello;` |
 | 数字 | Number | `42` → `$var: 42;` |
 | 布尔值 | Boolean | `true` → `$var: true;` |
+| null | null | `null` → `$var: null;` |
 | null | null | `null` → `$var: null;` |
 
 ## 配置选项
@@ -264,16 +280,31 @@ importers: [jsonImporter({
 1. **键名原样保留**：JSON 中的键名不会做任何转换，请在 JSON 中使用合法的 SCSS 变量名
 2. **嵌套保持嵌套**：嵌套对象会转为 SCSS Map，不会展平
 3. **数字无单位**：JSON 中的数字转为 SCSS Number，不带 CSS 单位
-4. **字符串保留引号**：JSON 字符串会转为带引号的 SCSS String
-5. **仅支持 Dart Sass**：不支持已废弃的 `node-sass`
-6. **`@use ... as theme` 命名空间**：默认模式下，JSON 顶层键在命名空间下需通过 `theme.$key` 访问，不能用 `map-get(theme, key)`（`theme` 是命名空间而非 map）
+4. **字符串原样输出**：JSON 字符串会原样转为 SCSS 值，不会自动添加引号
+5. **null 值保留**：JSON 中的 null 会转为 SCSS 的 `null`，不会过滤
+6. **仅支持 Dart Sass**：不支持已废弃的 `node-sass`
+7. **`@use ... as theme` 命名空间**：默认模式下，JSON 顶层键在命名空间下需通过 `theme.$key` 访问，不能用 `map-get(theme, key)`（`theme` 是命名空间而非 map）
 
 ## 兼容性
 
 - Node.js >= 14.0.0
-- Dart Sass >= 1.45.0
-- Vite（modern API 需 ≥5.4，legacy API 适用于任意版本）
+- Dart Sass >= 1.45.0（Modern API 引入版本）
+- Vite >= 6.0（默认使用 Modern API）
+- Vite 5.4 - 5.x（需显式设置 `api: 'modern-compiler'`）
+- Vite < 5.4（使用 `legacy: true` 选项）
 - HBuilderX 内置 vite 5.2.x（使用 `legacy: true`）
+
+### Modern API 支持详情
+
+| 工具 | 版本要求 | 配置方式 |
+|------|---------|---------|
+| Dart Sass | >= 1.45.0 | 原生支持，无需额外配置 |
+| Vite | >= 6.0 | 默认启用，无需配置 |
+| Vite | 5.4 - 5.x | 需设置 `api: 'modern-compiler'` |
+| Vite | < 5.4 | 使用 `legacy: true` 选项 |
+| HBuilderX | 内置 vite 5.2.x | 使用 `legacy: true` 选项 |
+
+> **注意**：Dart Sass 的 Legacy API（`render()`、`renderSync()`）已弃用，将在 Dart Sass 2.0.0 中移除。建议新项目使用 Modern API。
 
 ## 许可证
 

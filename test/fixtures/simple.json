@@ -1,9 +1,0 @@
-{
-  "primaryColor": "#ff0000",
-  "secondaryColor": "#00ff00",
-  "fontSize": 16,
-  "lineHeight": 1.5,
-  "isResponsive": true,
-  "isFixed": false,
-  "emptyValue": null
-}

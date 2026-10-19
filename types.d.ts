@@ -18,7 +18,7 @@ export interface JsonImporterOptions {
 }
 
 export interface ModernSassImporter {
-  canonicalize(url: string, context: { containingUrl?: URL }): URL | null;
+  canonicalize(url: string, context?: { containingUrl?: URL }): URL | null;
   load(canonicalUrl: URL): {
     contents: string;
     syntax: 'scss' | 'sass' | 'css';

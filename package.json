@@ -1,5 +1,5 @@
 {
-  "name": "dark-sass-json-importer",
+  "name": "@zhangjr0575/dark-sass-json-importer",
   "version": "1.0.0",
   "description": "Dart Sass importer for JSON files - import JSON as SCSS variables",
   "main": "./dist/index.cjs",
@@ -22,7 +22,8 @@
     "build": "node scripts/build.js",
     "test": "npm run build && jest",
     "test:coverage": "npm run build && jest --coverage",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublish": "npm run build && npm test",
+    "publish": "npm run prepublish && npm publish"
   },
   "keywords": [
     "sass",
@@ -30,9 +31,10 @@
     "json",
     "importer",
     "dart-sass",
-    "variables"
+    "variables",
+    "scss-json-importer",
+    "dark-sass-json-importer"
   ],
-  "author": "",
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"

@@ -5,11 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "verify": "node verify.cjs"
+    "build": "vite build"
   },
   "dependencies": {
-    "dark-sass-json-importer": "file:../.."
+    "@zhangjr0575/dark-sass-json-importer": "file:../.."
   },
   "devDependencies": {
     "sass": "^1.77.0",

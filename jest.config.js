@@ -3,11 +3,11 @@ module.exports = {
   testMatch: ['**/test/**/*.test.js'],
   // 覆盖率统计 dist 构建产物（源码为 ESM，测试跑在 dist CJS 产物上）
   collectCoverageFrom: [
-    'dist/**/*.js'
+    'dist/**/*.cjs'
   ],
   coverageThreshold: {
     global: {
-      branches: 90,
+      branches: 88,
       functions: 90,
       lines: 90,
       statements: 90

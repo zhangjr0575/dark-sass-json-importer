@@ -1,0 +1,28 @@
+// 通过 @use 导入 JSON，命名空间为 theme
+// theme.$primaryColor 等成员由 dark-sass-json-importer 注入
+@use "@/theme.json" as theme;
+@use "sass:map";
+
+// 基础样式 - 使用顶层变量
+.primary {
+  color: theme.$primaryColor;
+  font-size: theme.$fontSize * 1px;
+  font-family: theme.$fontFamily;
+}
+
+.muted {
+  color: theme.$mutedColor;
+}
+
+// 阴影系统
+.shadow-demo {
+  &.sm {
+    box-shadow: map.get(theme.$shadows, sm);
+  }
+  &.md {
+    box-shadow: map.get(theme.$shadows, md);
+  }
+  &.lg {
+    box-shadow: map.get(theme.$shadows, lg);
+  }
+}

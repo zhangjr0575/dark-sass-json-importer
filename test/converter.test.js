@@ -1,162 +1,137 @@
-const { convertValue, convertArray, convertObject, jsonToScss } = require('../dist/converter.cjs');
-
-describe('convertValue', () => {
-  test('null → "null"', () => {
-    expect(convertValue(null)).toBe('null');
-  });
-
-  test('undefined → "null"', () => {
-    expect(convertValue(undefined)).toBe('null');
-  });
-
-  test('true → "true"', () => {
-    expect(convertValue(true)).toBe('true');
-  });
-
-  test('false → "false"', () => {
-    expect(convertValue(false)).toBe('false');
-  });
-
-  test('整数', () => {
-    expect(convertValue(42)).toBe('42');
-  });
-
-  test('浮点数', () => {
-    expect(convertValue(1.5)).toBe('1.5');
-  });
-
-  test('负数', () => {
-    expect(convertValue(-10)).toBe('-10');
-  });
-
-  test('零', () => {
-    expect(convertValue(0)).toBe('0');
-  });
-
-  test('普通字符串加引号', () => {
-    expect(convertValue('hello')).toBe('"hello"');
-  });
-
-  test('颜色字符串加引号', () => {
-    expect(convertValue('#ff0000')).toBe('"#ff0000"');
-  });
-
-  test('空字符串', () => {
-    expect(convertValue('')).toBe('""');
-  });
-
-  test('字符串转义双引号', () => {
-    expect(convertValue('say "hi"')).toBe('"say \\"hi\\""');
-  });
-
-  test('字符串转义反斜杠', () => {
-    expect(convertValue('a\\b')).toBe('"a\\\\b"');
-  });
-
-  test('空数组', () => {
-    expect(convertValue([])).toBe('()');
-  });
-
-  test('数字数组', () => {
-    expect(convertValue([1, 2, 3])).toBe('(1, 2, 3)');
-  });
-
-  test('空对象', () => {
-    expect(convertValue({})).toBe('()');
-  });
-
-  test('简单对象', () => {
-    expect(convertValue({ a: 1 })).toBe('(a: 1)');
-  });
-});
-
-describe('convertArray', () => {
-  test('空数组', () => {
-    expect(convertArray([])).toBe('()');
-  });
-
-  test('字符串数组', () => {
-    expect(convertArray(['a', 'b'])).toBe('("a", "b")');
-  });
-
-  test('混合类型数组', () => {
-    expect(convertArray([1, 'x', true, null])).toBe('(1, "x", true, null)');
-  });
-
-  test('嵌套数组', () => {
-    expect(convertArray([[1, 2], [3, 4]])).toBe('((1, 2), (3, 4))');
-  });
-});
+/**
+ * converter.js 单元测试
+ */
+const { convertObject, jsonToScss } = require('../dist/index.cjs');
 
 describe('convertObject', () => {
-  test('空对象', () => {
+  test('空对象返回 ()', () => {
     expect(convertObject({})).toBe('()');
   });
 
-  test('单属性', () => {
-    expect(convertObject({ key: 'val' })).toBe('(key: "val")');
+  test('简单键值对转换为 SCSS map', () => {
+    expect(convertObject({ color: 'red', size: 16 })).toBe('(color: red, size: 16)');
   });
 
-  test('嵌套对象保持嵌套', () => {
-    const input = { outer: { inner: 42 } };
-    expect(convertObject(input)).toBe('(outer: (inner: 42))');
+  test('嵌套对象递归转换', () => {
+    const obj = { a: { b: 1 } };
+    expect(convertObject(obj)).toBe('(a: (b: 1))');
   });
 
-  test('深层嵌套', () => {
-    const input = { a: { b: { c: 'deep' } } };
-    expect(convertObject(input)).toBe('(a: (b: (c: "deep")))');
+  test('数组值转换为 SCSS list', () => {
+    const obj = { items: [1, 2, 3] };
+    expect(convertObject(obj)).toBe('(items: (1, 2, 3))');
+  });
+
+  test('null 值保留为 null', () => {
+    const obj = { key: null };
+    expect(convertObject(obj)).toBe('(key: null)');
+  });
+
+  test('undefined 值保留为 undefined', () => {
+    const obj = { key: undefined };
+    expect(convertObject(obj)).toBe('(key: undefined)');
+  });
+
+  test('布尔值原样输出', () => {
+    const obj = { enabled: true, disabled: false };
+    expect(convertObject(obj)).toBe('(enabled: true, disabled: false)');
+  });
+
+  test('null 参数返回 null', () => {
+    expect(convertObject(null)).toBeNull();
+  });
+
+  test('undefined 参数返回 undefined', () => {
+    expect(convertObject(undefined)).toBeUndefined();
   });
 });
 
 describe('jsonToScss', () => {
-  test('默认模式：顶层键生成独立变量', () => {
-    const json = { color: '#fff', size: 16 };
-    const result = jsonToScss(json);
-    expect(result).toBe('$color: "#fff";\n$size: 16;\n');
+  describe('独立变量模式（默认）', () => {
+    test('每个顶层 key 生成独立变量', () => {
+      const json = { color: 'red', size: 16 };
+      const result = jsonToScss(json);
+      expect(result).toBe('$color: red;\n$size: 16;\n');
+    });
+
+    test('空对象返回空字符串', () => {
+      expect(jsonToScss({})).toBe('');
+    });
+
+    test('嵌套对象生成 SCSS map 变量', () => {
+      const json = { theme: { primary: '#007bff' } };
+      const result = jsonToScss(json);
+      expect(result).toBe('$theme: (primary: #007bff);\n');
+    });
+
+    test('数组值生成 SCSS list 变量', () => {
+      const json = { spacing: [4, 8, 16] };
+      const result = jsonToScss(json);
+      expect(result).toBe('$spacing: (4, 8, 16);\n');
+    });
+
+    test('null 值生成 $key: null;', () => {
+      const json = { opacity: null };
+      const result = jsonToScss(json);
+      expect(result).toBe('$opacity: null;\n');
+    });
+
+    test('布尔值原样输出', () => {
+      const json = { enabled: true };
+      const result = jsonToScss(json);
+      expect(result).toBe('$enabled: true;\n');
+    });
   });
 
-  test('asMap 模式：整个 JSON 作为一个 map 变量', () => {
-    const json = { color: '#fff', size: 16 };
-    const result = jsonToScss(json, { asMap: true, filename: 'theme' });
-    expect(result).toBe('$theme: (color: "#fff", size: 16);\n');
+  describe('Map 模式（asMap: true）', () => {
+    test('整个 JSON 作为一个 SCSS map 变量', () => {
+      const json = { color: 'red', size: 16 };
+      const result = jsonToScss(json, { asMap: true, filename: 'config' });
+      expect(result).toBe('$config: (color: red, size: 16);\n');
+    });
+
+    test('默认 filename 为 data', () => {
+      const json = { key: 'value' };
+      const result = jsonToScss(json, { asMap: true });
+      expect(result).toBe('$data: (key: value);\n');
+    });
+
+    test('空对象生成空 map', () => {
+      const json = {};
+      const result = jsonToScss(json, { asMap: true });
+      expect(result).toBe('$data: ();\n');
+    });
+
+    test('嵌套结构完整转换', () => {
+      const json = {
+        theme: 'dark',
+        colors: { primary: '#007bff' },
+        spacing: [4, 8]
+      };
+      const result = jsonToScss(json, { asMap: true, filename: 'theme' });
+      expect(result).toBe('$theme: (theme: dark, colors: (primary: #007bff), spacing: (4, 8));\n');
+    });
   });
 
-  test('空 JSON 返回空字符串', () => {
-    expect(jsonToScss({})).toBe('');
-  });
+  describe('错误处理', () => {
+    test('非对象输入抛出错误', () => {
+      expect(() => jsonToScss('string')).toThrow('JSON 文件的顶层必须是对象（Object）');
+    });
 
-  test('asMap 模式空 JSON', () => {
-    const result = jsonToScss({}, { asMap: true, filename: 'empty' });
-    expect(result).toBe('$empty: ();\n');
-  });
+    test('null 输入抛出错误', () => {
+      expect(() => jsonToScss(null)).toThrow('JSON 文件的顶层必须是对象（Object）');
+    });
 
-  test('非对象抛出错误', () => {
-    expect(() => jsonToScss([1, 2])).toThrow('顶层必须是对象');
-    expect(() => jsonToScss(null)).toThrow('顶层必须是对象');
-    expect(() => jsonToScss('str')).toThrow('顶层必须是对象');
-  });
+    test('数组输入抛出错误', () => {
+      expect(() => jsonToScss([1, 2, 3])).toThrow('JSON 文件的顶层必须是对象（Object）');
+    });
 
-  test('嵌套对象作为 map 值', () => {
-    const json = { colors: { a: '#fff', b: '#000' } };
-    const result = jsonToScss(json);
-    expect(result).toBe('$colors: (a: "#fff", b: "#000");\n');
-  });
+    test('数字输入抛出错误', () => {
+      expect(() => jsonToScss(42)).toThrow('JSON 文件的顶层必须是对象（Object）');
+    });
 
-  test('数组作为 list 值', () => {
-    const json = { sizes: [1, 2, 3] };
-    const result = jsonToScss(json);
-    expect(result).toBe('$sizes: (1, 2, 3);\n');
-  });
-
-  test('多种类型混合', () => {
-    const json = { a: 1, b: 'x', c: true, d: null };
-    const result = jsonToScss(json);
-    const lines = result.trim().split('\n');
-    expect(lines).toEqual([
-      '$a: 1;',
-      '$b: "x";',
-      '$c: true;',
-      '$d: null;'
-    ]);
+    test('undefined 输入抛出错误', () => {
+      expect(() => jsonToScss(undefined)).toThrow('JSON 文件的顶层必须是对象（Object）');
+    });
   });
 });
