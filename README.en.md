@@ -1,4 +1,4 @@
-**English | [中文](README.md)**
+** [中文](README.md) | English **
 
 # @zhangjr0575/dark-sass-json-importer
 
