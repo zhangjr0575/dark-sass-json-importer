@@ -9,7 +9,7 @@ Supports both **modern API** (`sass.compile` + `importers`) and **legacy JS API*
 ## Installation
 
 ```bash
-npm install dark-sass-json-importer sass
+npm install @zhangjr0575/dark-sass-json-importer sass
 ```
 
 ## Features
@@ -30,7 +30,7 @@ npm install dark-sass-json-importer sass
 
 ```javascript
 const sass = require('sass');
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 
 const result = sass.compile('input.scss', {
   importers: [jsonImporter()]
@@ -88,7 +88,7 @@ const result = sass.compile('input.scss', {
 
 ```javascript
 const sass = require('sass');
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 
 const result = sass.compile('input.scss', {
   importers: [jsonImporter()]
@@ -99,7 +99,7 @@ const result = sass.compile('input.scss', {
 
 ```javascript
 import { defineConfig } from 'vite';
-import jsonImporter from 'dark-sass-json-importer';
+import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
 
 export default defineConfig({
   css: {
@@ -119,7 +119,7 @@ The `importer` field in `sass.render()` expects a **function-style** importer, n
 
 ```javascript
 const sass = require('sass');
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 
 sass.render({
   file: 'input.scss',
@@ -133,7 +133,7 @@ sass.render({
 
 ```javascript
 import { defineConfig } from 'vite';
-import jsonImporter from 'dark-sass-json-importer';
+import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -162,7 +162,6 @@ export default defineConfig({
 | String    | String    | `"hello"` → `$var: hello;` |
 | Number    | Number    | `42` → `$var: 42;` |
 | Boolean   | Boolean   | `true` → `$var: true;` |
-| null      | null      | `null` → `$var: null;`  |
 | null      | null      | `null` → `$var: null;` |
 
 ## Configuration Options
@@ -308,14 +307,14 @@ Explicitly creates a legacy function-style importer with signature:
 ### CommonJS
 
 ```javascript
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 const importer = jsonImporter({ asMap: false });
 ```
 
 ### ES Modules
 
 ```javascript
-import jsonImporter from 'dark-sass-json-importer';
+import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
 const importer = jsonImporter({ asMap: false });
 ```
 
@@ -327,6 +326,7 @@ const importer = jsonImporter({ asMap: false });
 4. **Strings pass through as-is**: JSON strings are converted to SCSS values without automatic quoting.
 5. **null values preserved**: JSON null values are converted to SCSS `null`, not filtered out.
 6. **Dart Sass only**: The deprecated `node-sass` is not supported.
+7. **`@use ... as theme` namespace**: In default mode, top-level JSON keys must be accessed via `theme.$key` under a namespace, not `map-get(theme, key)` (`theme` is a namespace, not a map).
 
 ## Compatibility
 
@@ -336,6 +336,15 @@ const importer = jsonImporter({ asMap: false });
 - Vite 5.4 - 5.x (requires explicit `api: 'modern-compiler'` setting)
 - Vite < 5.4 (use `legacy: true` option)
 - HBuilderX built-in vite 5.2.x (use `legacy: true` option)
+
+### Sass Version Requirements
+
+| API Mode | Minimum Sass Version | Description |
+|----------|---------------------|-------------|
+| Modern API (default) | >= 1.45.0 | 1.45.0 introduced Modern Importer API (`canonicalize` + `load`) |
+| Legacy API (`legacy: true`) | >= 1.0.0 | Function-style importer supported since Dart Sass 1.0.0 |
+
+> **Note**: The project's `peerDependencies` is set to `sass >= 1.45.0` to encourage Modern API usage. To support lower versions, manually change it to `>= 1.0.0`, but only use `legacy: true` mode.
 
 ### Modern API Support Details
 

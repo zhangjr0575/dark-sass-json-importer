@@ -9,7 +9,7 @@ Dart Sass 自定义 Importer，让你直接在 SCSS 中导入 JSON 文件并作�
 ## 安装
 
 ```bash
-npm install dark-sass-json-importer sass
+npm install @zhangjr0575/dark-sass-json-importer sass
 ```
 
 ## 特性
@@ -30,7 +30,7 @@ npm install dark-sass-json-importer sass
 
 ```javascript
 const sass = require('sass');
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 
 const result = sass.compile('input.scss', {
   importers: [jsonImporter()]
@@ -52,7 +52,7 @@ const result = sass.compile('input.scss', {
 }
 ```
 
-### 2. 在 SCSS 中使用
+### 3. 在 SCSS 中使用
 
 ```scss
 @use "./variables.json" as *;
@@ -87,7 +87,7 @@ const result = sass.compile('input.scss', {
 
 ```javascript
 const sass = require('sass');
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 
 const result = sass.compile('input.scss', {
   importers: [jsonImporter()]
@@ -98,7 +98,7 @@ const result = sass.compile('input.scss', {
 
 ```javascript
 import { defineConfig } from 'vite';
-import jsonImporter from 'dark-sass-json-importer';
+import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
 
 export default defineConfig({
   css: {
@@ -118,7 +118,7 @@ export default defineConfig({
 
 ```javascript
 const sass = require('sass');
-const jsonImporter = require('dark-sass-json-importer');
+const jsonImporter = require('@zhangjr0575/dark-sass-json-importer');
 
 sass.render({
   file: 'input.scss',
@@ -132,7 +132,7 @@ sass.render({
 
 ```javascript
 import { defineConfig } from 'vite';
-import jsonImporter from 'dark-sass-json-importer';
+import jsonImporter from '@zhangjr0575/dark-sass-json-importer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -161,7 +161,6 @@ export default defineConfig({
 | 字符串 | String | `"hello"` → `$var: hello;` |
 | 数字 | Number | `42` → `$var: 42;` |
 | 布尔值 | Boolean | `true` → `$var: true;` |
-| null | null | `null` → `$var: null;` |
 | null | null | `null` → `$var: null;` |
 
 ## 配置选项
@@ -293,6 +292,15 @@ importers: [jsonImporter({
 - Vite 5.4 - 5.x（需显式设置 `api: 'modern-compiler'`）
 - Vite < 5.4（使用 `legacy: true` 选项）
 - HBuilderX 内置 vite 5.2.x（使用 `legacy: true`）
+
+### Sass 版本要求
+
+| API 模式 | 最低 Sass 版本 | 说明 |
+|---------|--------------|------|
+| Modern API（默认） | >= 1.45.0 | 1.45.0 引入 Modern Importer API（`canonicalize` + `load`） |
+| Legacy API（`legacy: true`） | >= 1.0.0 | 函数式 importer 从 Dart Sass 1.0.0 起就支持 |
+
+> **注意**：项目 `peerDependencies` 统一设置为 `sass >= 1.45.0`，鼓励使用 Modern API。如需支持更低版本，可手动修改为 `>= 1.0.0`，但仅限使用 `legacy: true` 模式。
 
 ### Modern API 支持详情
 
